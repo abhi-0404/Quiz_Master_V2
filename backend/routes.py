@@ -14,3 +14,15 @@ class SignupResource(Resource):
         db.session.commit()
         return {"username": username, "email": email}
     
+class LoginResource(Resource):
+    def post(self):
+        data = request.get_json()
+        email = data['email']
+        password = data['password']
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password_hash, password):
+            access_token = create_access_token(identity=user.username)
+            response = jsonify({"msg":"successfully logged in", "token": access_token})
+            return make_response(response, 401)
+        response = jsonify({"msg": "email or password incorrect."})
+        return make_response(response, 200)

@@ -1,30 +1,20 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { ref } from 'vue'
+import LandingPage from './components/LandingPage.vue'
+import LoginPage from './components/LoginPage.vue'
+import RegisterPage from './components/RegisterPage.vue'
+
+const currentPage = ref('landing')
+
+function goTo(page) {
+  currentPage.value = page
+}
 </script>
 
 <template>
   <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <LandingPage v-if="currentPage === 'landing'" @navigate="goTo" />
+    <LoginPage v-else-if="currentPage === 'login'" @navigate="goTo" />
+    <RegisterPage v-else-if="currentPage === 'register'" @navigate="goTo" />
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
