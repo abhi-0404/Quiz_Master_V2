@@ -1,20 +1,10 @@
-<script setup>
-import { ref } from 'vue'
-import LandingPage from './components/LandingPage.vue'
-import LoginPage from './components/LoginPage.vue'
-import RegisterPage from './components/RegisterPage.vue'
-
-const currentPage = ref('landing')
-
-function goTo(page) {
-  currentPage.value = page
-}
-</script>
-
+// frontend/App.vue
 <template>
-  <div>
-    <LandingPage v-if="currentPage === 'landing'" @navigate="goTo" />
-    <LoginPage v-else-if="currentPage === 'login'" @navigate="goTo" />
-    <RegisterPage v-else-if="currentPage === 'register'" @navigate="goTo" />
+  <div id="app">
+    <router-view /> <!-- This component renders the current route's component -->
   </div>
 </template>
+
+<script setup>
+// No more v-if logic needed here!
+</script>

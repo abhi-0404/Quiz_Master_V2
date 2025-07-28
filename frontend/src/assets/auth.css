@@ -1,0 +1,91 @@
+/* frontend/src/assets/auth.css */
+
+body {
+  background-color: #2a2a33;
+  color: #e0e0e0;
+}
+
+.auth-container {
+  background-color: #16161a;
+  min-height: 100vh;
+}
+
+.logo-panel {
+  background-color: #1e1e24;
+  /* A subtle background pattern */
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.logo-text {
+  font-size: 4rem;
+  font-weight: bold;
+  background: -webkit-linear-gradient(45deg, #a855f7, #d946ef);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.form-panel {
+  background-color: #16161a;
+  padding: 0 5rem;
+}
+
+.form-panel h3 {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.form-panel .form-label {
+  color: #a0a0a0;
+  font-weight: 500;
+}
+
+.form-panel .text-muted {
+  color: #94a3b8 !important; /* A light, readable gray */
+}
+
+.form-panel .form-control {
+  background-color: #24242c;
+  border: 1px solid #3a3a43;
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.form-panel .form-control:focus {
+  background-color: #24242c;
+  border-color: #6e56f1;
+  box-shadow: 0 0 0 2px rgba(110, 86, 241, 0.2);
+  color: #ffffff;
+}
+
+.form-panel .form-control::placeholder {
+  color: #5a5a6a;
+}
+
+.btn-purple {
+  background: linear-gradient(to right, #8b5cf6, #c026d3);
+  border: none;
+  padding: 0.8rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-purple:hover {
+  opacity: 0.9;
+  box-shadow: 0 4px 15px rgba(192, 38, 211, 0.3);
+}
+
+.bottom-link a {
+  color: #a855f7;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.bottom-link a:hover {
+  text-decoration: underline;
+}

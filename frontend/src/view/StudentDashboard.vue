@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-dashboard-container d-flex">
+  <div class="student-dashboard-container d-flex">
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <div class="sidebar-header">
@@ -34,8 +34,8 @@
     <main class="main-content flex-grow-1">
       <header class="main-header d-flex justify-content-between align-items-center">
         <div>
-          <h1 class="welcome-title">Welcome Admin</h1>
-          <p class="welcome-subtitle">Welcome back, Sarah! Here's what's happening with your quizzes.</p>
+          <h1 class="welcome-title">Welcome Student</h1>
+          <p class="welcome-subtitle">Welcome back, Aman! Here's what's happening with your quizzes.</p>
         </div>
         <div class="d-flex align-items-center">
           <div class="search-wrapper me-3">
@@ -124,11 +124,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
-// --- Placeholder Data ---
-// You will replace this with data from your API
-
+// --- Component State ---
 const summaryCards = ref([
   { title: 'Total Quizzes', value: '2,543', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v15H6.5A2.5 2.5 0 0 1 4 14.5V4A2 2 0 0 1 6.5 2z"></path></svg>', iconBg: 'rgba(110, 86, 241, 0.1)' },
   { title: 'Active Events', value: '2,543', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>', iconBg: 'rgba(52, 195, 143, 0.1)' },
@@ -148,34 +147,63 @@ const recentQuizzes = ref([
   { title: 'Introduction to Biology', questions: 15, completions: 28, completionRate: 90 },
 ]);
 
+const loading = ref(false);
+const error = ref(null);
+
+// --- API Call ---
+// This function will fetch real data from your backend.
+async function fetchDashboardData() {
+  loading.value = true;
+  error.value = null;
+  try {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      throw new Error('Authentication token not found.');
+    }
+
+    // Replace with your actual API endpoint
+    const response = await axios.get('http://127.0.0.1:5000/api/admin/dashboard', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    // Here you would update your refs with the data from the API
+    // For example:
+    // summaryCards.value = response.data.summaryCards;
+    // recentEvents.value = response.data.recentEvents;
+    // recentQuizzes.value = response.data.recentQuizzes;
+    
+    console.log('Dashboard data:', response.data);
+
+  } catch (err) {
+    error.value = 'Failed to fetch dashboard data. Please try again later.';
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+}
+
+// Fetch data when the component is first mounted
+onMounted(() => {
+  // fetchDashboardData(); // You can uncomment this when your API is ready
+});
+
 </script>
 
 <style scoped>
 /* Main Layout & Theme */
-:root {
-  --primary-color: #6E56F1;
-  --background-color: #16161A;
-  --sidebar-bg: #1E1E24;
-  --card-bg: #24242C;
-  --text-primary: #FFFFFF;
-  --text-secondary: #94A3B8;
-  --border-color: #3A3A43;
-  --green-color: #34C38F;
-  --orange-color: #F1B44C;
-  --blue-color: #50A5F1;
-}
-
 .admin-dashboard-container {
   font-family: 'Inter', sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-primary);
+  background-color: #16161A;
+  color: #FFFFFF;
   min-height: 100vh;
 }
 
 /* Sidebar */
 .sidebar {
   width: 260px;
-  background-color: var(--sidebar-bg);
+  background-color: #1E1E24;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -189,7 +217,7 @@ const recentQuizzes = ref([
 }
 
 .logo-icon {
-  color: var(--primary-color);
+  color: #6E56F1;
   width: 32px;
   height: 32px;
 }
@@ -206,19 +234,19 @@ const recentQuizzes = ref([
   padding: 0.9rem 1rem;
   border-radius: 0.5rem;
   margin-bottom: 0.5rem;
-  color: var(--text-secondary);
+  color: #94A3B8;
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 .nav-menu .nav-item:hover {
-  background-color: var(--card-bg);
-  color: var(--text-primary);
+  background-color: #24242C;
+  color: #FFFFFF;
 }
 
 .nav-menu .nav-item.active {
-  background-color: var(--primary-color);
-  color: var(--text-primary);
+  background-color: #6E56F1;
+  color: #FFFFFF;
   font-weight: 500;
 }
 
@@ -231,6 +259,7 @@ const recentQuizzes = ref([
 /* Main Content */
 .main-content {
   padding: 2rem 3rem;
+  overflow-y: auto;
 }
 
 .main-header {
@@ -244,7 +273,7 @@ const recentQuizzes = ref([
 }
 
 .welcome-subtitle {
-  color: var(--text-secondary);
+  color: #94A3B8;
   font-size: 1rem;
   margin-top: 0.25rem;
 }
@@ -258,29 +287,29 @@ const recentQuizzes = ref([
   left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-secondary);
+  color: #94A3B8;
 }
 
 .search-input {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background-color: #24242C;
+  border: 1px solid #3A3A43;
   border-radius: 0.5rem;
-  color: var(--text-primary);
-  padding: 0.6rem 1rem 0.6rem 2.5rem; /* left padding for icon */
+  color: #FFFFFF;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
   width: 250px;
   transition: all 0.3s ease;
 }
 .search-input::placeholder {
-  color: var(--text-secondary);
+  color: #94A3B8;
 }
 .search-input:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: #6E56F1;
   box-shadow: 0 0 0 2px rgba(110, 86, 241, 0.2);
 }
 
 .create-quiz-btn {
-  background-color: var(--primary-color);
+  background-color: #6E56F1;
   border: none;
   border-radius: 0.5rem;
   padding: 0.75rem 1.25rem;
@@ -300,20 +329,20 @@ const recentQuizzes = ref([
   font-weight: 600;
 }
 .section-subtitle {
-  color: var(--text-secondary);
+  color: #94A3B8;
   font-size: 0.9rem;
   margin-bottom: 1.5rem;
 }
 
 /* Summary Cards */
 .summary-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background-color: #24242C;
+  border: 1px solid #3A3A43;
   border-radius: 0.75rem;
   padding: 1.5rem;
 }
 .card-title-text {
-  color: var(--text-secondary);
+  color: #94A3B8;
   margin-bottom: 0.5rem;
 }
 .card-value {
@@ -331,16 +360,16 @@ const recentQuizzes = ref([
 .card-icon-wrapper svg {
   width: 24px;
   height: 24px;
-  color: var(--primary-color);
+  color: #6E56F1;
 }
-.summary-cards .col-md-3:nth-child(2) .card-icon-wrapper svg { color: var(--green-color); }
-.summary-cards .col-md-3:nth-child(3) .card-icon-wrapper svg { color: var(--blue-color); }
-.summary-cards .col-md-3:nth-child(4) .card-icon-wrapper svg { color: var(--orange-color); }
+.summary-cards .col-md-3:nth-child(2) .card-icon-wrapper svg { color: #34C38F; }
+.summary-cards .col-md-3:nth-child(3) .card-icon-wrapper svg { color: #50A5F1; }
+.summary-cards .col-md-3:nth-child(4) .card-icon-wrapper svg { color: #F1B44C; }
 
 /* Recent Events */
 .events-list {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background-color: #24242C;
+  border: 1px solid #3A3A43;
   border-radius: 0.75rem;
   padding: 1rem;
 }
@@ -349,11 +378,11 @@ const recentQuizzes = ref([
   border-radius: 0.5rem;
 }
 .event-item:not(:last-child) {
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid #3A3A43;
 }
 .event-icon-wrapper {
   background-color: rgba(52, 195, 143, 0.1);
-  color: var(--green-color);
+  color: #34C38F;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -371,7 +400,7 @@ const recentQuizzes = ref([
   margin-bottom: 0.25rem;
 }
 .event-details {
-  color: var(--text-secondary);
+  color: #94A3B8;
   font-size: 0.85rem;
   margin: 0;
 }
@@ -387,35 +416,35 @@ const recentQuizzes = ref([
 .btn-manage {
   background-color: #3A3A43;
   border: 1px solid #555;
-  color: var(--text-primary);
+  color: #FFFFFF;
 }
 .btn-view-live {
-  background-color: var(--primary-color);
+  background-color: #6E56F1;
   border: none;
-  color: var(--text-primary);
+  color: #FFFFFF;
 }
 
 /* Recent Quizzes */
 .quiz-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background-color: #24242C;
+  border: 1px solid #3A3A43;
   border-radius: 0.75rem;
   padding: 1.5rem;
   transition: all 0.3s ease;
 }
 .quiz-card:hover {
   transform: translateY(-5px);
-  border-color: var(--primary-color);
+  border-color: #6E56F1;
 }
 .quiz-title {
   font-size: 1rem;
   font-weight: 600;
 }
 .quiz-card-header svg {
-  color: var(--text-secondary);
+  color: #94A3B8;
 }
 .quiz-details {
-  color: var(--text-secondary);
+  color: #94A3B8;
   font-size: 0.85rem;
   margin-top: 1rem;
   margin-bottom: 1.5rem;
@@ -425,7 +454,7 @@ const recentQuizzes = ref([
 }
 .progress-bar-wrapper .progress-bar-label {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  color: #94A3B8;
   margin-bottom: 0.5rem;
 }
 .progress-bar-bg {
@@ -435,7 +464,7 @@ const recentQuizzes = ref([
   overflow: hidden;
 }
 .progress-bar-fg {
-  background-color: var(--primary-color);
+  background-color: #6E56F1;
   height: 100%;
   border-radius: 3px;
 }
