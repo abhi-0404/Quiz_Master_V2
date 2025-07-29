@@ -4,8 +4,12 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LandingPage from '../view/LandingPage.vue';
 import LoginPage from '../view/LoginPage.vue';
 import RegisterPage from '../view/RegisterPage.vue';
-import AdminDashboard from '../view/AdminDashboard.vue';
-import StudentDashboard from '../view/StudentDashboard.vue';
+import AdminDashboard from '../view/Admin/AdminDashboard.vue';
+import StudentDashboard from '../view/Student/StudentDashboard.vue';
+import EventsPage from '../view/Admin/EventsPage.vue';
+import CreateQuizPage from '../view/Admin/CreateQuizPage.vue';
+import ProfilePage from '../view/Admin/ProfilePage.vue';
+import StudentsPage from '../view/Admin/StudentsPage.vue';
 
 const routes = [
   { path: '/', name: 'Landing', component: LandingPage },
@@ -15,14 +19,38 @@ const routes = [
     path: '/admin/dashboard',
     name: 'AdminDashboard',
     component: AdminDashboard,
-    meta: { requiresAuth: true, role: 'admin' }   // ✅ Added
+    meta: { requiresAuth: true, role: 'admin' }  
   },
   {
     path: '/student/dashboard',
     name: 'StudentDashboard',
     component: StudentDashboard,
-    meta: { requiresAuth: true, role: 'student' } // ✅ Added
-  }
+    meta: { requiresAuth: true, role: 'student' } 
+  },
+  {
+    path: '/admin/events',
+    name: 'EventsPage',
+    component: EventsPage,
+    meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/admin/create-quiz',
+    name: 'CreateQuizPage',
+    component: CreateQuizPage,
+    meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/admin/profile',
+    name: 'ProfilePage',
+    component: ProfilePage,
+    meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/admin/students',
+    name: 'StudentsPage',
+    component: StudentsPage,
+    meta: { requiresAuth: true, role: 'admin' }
+  },
 ];
 
 const router = createRouter({

@@ -1,34 +1,7 @@
 <template>
-  <div class="Admin-dashboard-container d-flex">
+  <div class="d-flex">
     <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
-        <span class="logo-text">Quizzy</span>
-      </div>
-      <nav class="nav-menu">
-        <a href="#" class="nav-item active">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-          <span>Dashboard</span>
-        </a>
-        <a href="#" class="nav-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v15H6.5A2.5 2.5 0 0 1 4 14.5V4A2 2 0 0 1 6.5 2z"></path></svg>
-          <span>Quizzes</span>
-        </a>
-        <a href="#" class="nav-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          <span>Events</span>
-        </a>
-        <a href="#" class="nav-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          <span>Students</span>
-        </a>
-        <a href="#" class="nav-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          <span>Profile</span>
-        </a>
-      </nav>
-    </aside>
+    <AdminSidebar />
 
     <!-- Main Content -->
     <main class="main-content flex-grow-1">
@@ -42,10 +15,10 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input type="text" class="search-input" placeholder="Search...">
           </div>
-          <button class="btn btn-primary create-quiz-btn">
+<!--           <button class="btn btn-primary create-quiz-btn">
              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             Create New Quiz
-          </button>
+          </button> -->
         </div>
       </header>
 
@@ -126,26 +99,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import AdminSidebar from '../../components/AdminSidebar.vue';
 
-// --- Component State ---
-const summaryCards = ref([
-  { title: 'Total Quizzes', value: '2,543', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v15H6.5A2.5 2.5 0 0 1 4 14.5V4A2 2 0 0 1 6.5 2z"></path></svg>', iconBg: 'rgba(110, 86, 241, 0.1)' },
-  { title: 'Active Events', value: '2,543', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>', iconBg: 'rgba(52, 195, 143, 0.1)' },
-  { title: 'Students', value: '2,543', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>', iconBg: 'rgba(80, 165, 241, 0.1)' },
-  { title: 'Total Questions', value: '2,543', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>', iconBg: 'rgba(241, 180, 76, 0.1)' }
-]);
-
-const recentEvents = ref([
-  { title: 'Science Mid-term Quiz', time: 'Today, 2:30 PM', participants: 32, isLive: true },
-  { title: 'Mathematics Weekly Test', time: 'Tomorrow, 10:00 AM', participants: 28, isLive: false },
-  { title: 'History Final Exam', time: 'May 20, 9:00 AM', participants: 45, isLive: false },
-]);
-
-const recentQuizzes = ref([
-  { title: 'Introduction to Biology', questions: 15, completions: 28, completionRate: 75 },
-  { title: 'Introduction to Biology', questions: 15, completions: 28, completionRate: 40 },
-  { title: 'Introduction to Biology', questions: 15, completions: 28, completionRate: 90 },
-]);
+const summaryCards = ref([]);
+const recentEvents = ref([]);
+const recentQuizzes = ref([]);
 
 const loading = ref(false);
 const error = ref(null);
@@ -165,15 +123,14 @@ async function fetchDashboardData() {
     const response = await axios.get('http://127.0.0.1:5000/api/admin/dashboard', {
       headers: {
         'Authorization': `Bearer ${token}`
-      }
+      },
+      withCredentials: true
     });
 
-    // Here you would update your refs with the data from the API
-    // For example:
-    // summaryCards.value = response.data.summaryCards;
-    // recentEvents.value = response.data.recentEvents;
-    // recentQuizzes.value = response.data.recentQuizzes;
-    
+    // Update refs with real data from backend
+    summaryCards.value = response.data.summaryCards || [];
+    recentEvents.value = response.data.recentEvents || [];
+    recentQuizzes.value = response.data.recentQuizzes || [];
     console.log('Dashboard data:', response.data);
 
   } catch (err) {
@@ -186,7 +143,7 @@ async function fetchDashboardData() {
 
 // Fetch data when the component is first mounted
 onMounted(() => {
-  // fetchDashboardData(); // You can uncomment this when your API is ready
+  fetchDashboardData();
 });
 
 </script>

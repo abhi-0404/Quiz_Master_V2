@@ -15,9 +15,10 @@ body {
 .text-gradient {
   background: linear-gradient(90deg, #f72585, #7209b7);
   background-clip: text;
-  -webkit-background-clip: text;  /* For Safari/Chrome */
+  -webkit-background-clip: text;  
   color: transparent;
-  -webkit-text-fill-color: transparent; /* For Safari */
+  -webkit-text-fill-color: transparent; 
+  background-clip: text; 
 }
 
 .hero-section {

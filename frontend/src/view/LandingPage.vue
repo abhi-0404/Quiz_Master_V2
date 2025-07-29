@@ -7,12 +7,7 @@
         <!-- The brand logo now links to the home page -->
         <router-link class="navbar-brand fw-bold text-gradient" to="/">Quizzy</router-link>
         <div class="collapse navbar-collapse">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="#">Quiz</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Weekly Quiz</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Rewards</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-          </ul>
+      
           <div class="d-flex gap-2">
             <!-- UPDATED: Use router-link for navigation -->
             <router-link to="/login" class="btn btn-outline-light btn-sm">Sign In</router-link>
