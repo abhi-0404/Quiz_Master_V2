@@ -12,6 +12,7 @@ from models.quiz_models import Subject, Chapter, Quiz, Question, Score
 # Import blueprints (routes)
 from routes.auth import auth_bp
 from admin import admin_bp 
+from student import student_bp 
 
 def create_app():
     """Creates and configures the Flask application."""
@@ -31,6 +32,7 @@ def create_app():
     # --- Register Blueprints ---
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
+    app.register_blueprint(student_bp, url_prefix='/api/student')
 
     # --- Create Database and Admin User ---
     with app.app_context():

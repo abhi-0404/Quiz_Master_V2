@@ -3,11 +3,12 @@
     <AdminSidebar />
     <!-- Main Content -->
     <main class="main-content flex-grow-1">
-      <header class="main-header">
+      <header class="main-header d-flex justify-content-between align-items-center">
         <div>
           <h1 class="page-title">Profile</h1>
           <p class="page-subtitle">Manage your account Profile</p>
         </div>
+        <button class="btn btn-outline-danger logout-btn" @click="logout">Logout</button>
       </header>
 
       <!-- Profile Information Section -->
@@ -76,10 +77,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 import AdminSidebar from '../../components/AdminSidebar.vue';
 
-
+const router = useRouter();
 const profile = ref({});
 const loading = ref(false);
 const error = ref(null);
@@ -93,7 +95,6 @@ async function fetchProfile() {
     const response = await axios.get('http://127.0.0.1:5000/api/admin/profile', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
-    console.log(response.data);
     profile.value = response.data.profile || {};
   } catch (err) {
     error.value = 'Failed to fetch profile.';
@@ -111,6 +112,11 @@ const saveProfile = () => {
     // Logic to save profile changes will be added here later
     console.log('Saving profile...', profile.value);
 };
+
+function logout() {
+  localStorage.removeItem('authToken');
+  router.push({ name: 'Login' });
+}
 </script>
 
 <style scoped>
@@ -216,6 +222,17 @@ const saveProfile = () => {
   border-radius: 0.5rem;
   padding: 0.75rem 1.5rem;
   font-weight: 500;
+}
+
+.logout-btn {
+  min-width: 100px;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: #ff6b6b;
+  color: #fff;
+  border-color: #ff6b6b;
 }
 
 .save-changes-btn:hover {

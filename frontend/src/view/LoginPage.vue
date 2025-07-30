@@ -32,12 +32,12 @@ async function login() {
 
     localStorage.setItem('authToken', token);
     const payload = decodeToken(token);
-    if (!payload || !payload.role) throw new Error("Invalid token payload");
+    if (!payload || !payload.sub || !payload.sub.role) throw new Error("Invalid token payload");
 
-    const role = payload.role.toLowerCase();
+    const role = payload.sub.role.toLowerCase();
     if (role === 'admin') {
       router.push('/admin/dashboard');
-    } else {
+    } else if (role === 'student') {
       router.push('/student/dashboard');
     }
   } catch (err) {

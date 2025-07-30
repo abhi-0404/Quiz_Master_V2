@@ -1,7 +1,12 @@
 <template>
-  <div class="d-flex">
+  <div class="d-flex admin-dashboard-responsive">
     <!-- Sidebar Navigation -->
-    <AdminSidebar />
+    <aside class="sidebar sidebar-fixed">
+      <AdminSidebar :isOpen="sidebarOpen" @toggle="toggleSidebar" />
+    </aside>
+
+    <!-- Overlay for mobile -->
+    <div v-if="sidebarOpen && isMobile" class="sidebar-overlay" @click="toggleSidebar"></div>
 
     <!-- Main Content -->
     <main class="main-content flex-grow-1">
@@ -23,17 +28,26 @@
       </header>
 
       <!-- Summary Cards -->
-      <section class="summary-cards row">
-        <div v-for="card in summaryCards" :key="card.title" class="col-md-3">
-          <div class="summary-card">
-            <div class="card-body d-flex justify-content-between align-items-center">
-              <div>
-                <p class="card-title-text">{{ card.title }}</p>
-                <h3 class="card-value">{{ card.value }}</h3>
-              </div>
-              <div class="card-icon-wrapper" :style="{ backgroundColor: card.iconBg }">
-                <div v-html="card.icon"></div>
-              </div>
+      <section class="summary-cards d-flex flex-row gap-3" style="flex-wrap:nowrap; overflow-x:auto;">
+        <div v-for="(card, idx) in summaryCards" :key="card.title" class="summary-card d-flex align-items-stretch flex-shrink-0">
+          <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <div class="mb-2 mb-md-0">
+              <p class="card-title-text">{{ card.title }}</p>
+              <h3 class="card-value">{{ card.value }}</h3>
+            </div>
+            <div class="card-icon-wrapper d-flex align-items-center justify-content-center">
+              <span v-if="card.title === 'Quizzes'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="#6E56F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              </span>
+              <span v-else-if="card.title === 'Quiz Attempts'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="#34C38F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              </span>
+              <span v-else-if="card.title === 'Average Marks'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="#50A5F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/><polyline points="7 11 12 6 17 11"/><line x1="12" y1="6" x2="12" y2="18"/></svg>
+              </span>
+              <span v-else-if="card.title === 'Students'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="19" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+              </span>
             </div>
           </div>
         </div>
@@ -43,15 +57,15 @@
       <section class="recent-events mt-4">
         <h2 class="section-title">Recent Events</h2>
         <p class="section-subtitle">Manage your upcoming and active quiz events</p>
-        <div class="events-list">
-          <div v-for="event in recentEvents" :key="event.title" class="event-item d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center">
-              <div class="event-icon-wrapper">
+        <div class="events-list d-flex flex-column gap-2">
+          <div v-for="event in recentEvents" :key="event.title" class="event-item d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2 gap-md-0">
+            <div class="d-flex align-items-center gap-2">
+              <div class="event-icon-wrapper d-flex align-items-center justify-content-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               </div>
               <div>
-                <p class="event-title">{{ event.title }}</p>
-                <p class="event-details">{{ event.time }} <span class="dot-separator">•</span> {{ event.participants }} participants</p>
+                <p class="event-title mb-1">{{ event.title }}</p>
+                <p class="event-details mb-0">{{ event.time }} <span class="dot-separator">•</span> {{ event.participants }} participants</p>
               </div>
             </div>
             <button :class="['btn', event.isLive ? 'btn-view-live' : 'btn-manage']">{{ event.isLive ? 'View Live' : 'Manage' }}</button>
@@ -59,57 +73,60 @@
         </div>
       </section>
 
-      <!-- Recent Quizzes -->
-      <section class="recent-quizzes mt-4">
-        <h2 class="section-title">Recent Quizzes</h2>
-        <p class="section-subtitle">Your recently created quizzes</p>
-        <div class="row">
-          <div v-for="quiz in recentQuizzes" :key="quiz.title" class="col-md-4">
-            <div class="quiz-card">
-              <div class="quiz-card-header d-flex justify-content-between align-items-center">
-                <h5 class="quiz-title">{{ quiz.title }}</h5>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </div>
-              <div class="quiz-card-body">
-                <p class="quiz-details">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                  {{ quiz.questions }} questions
-                  <span class="dot-separator">•</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                  {{ quiz.completions }} completions
-                </p>
-                <div class="progress-bar-wrapper">
-                  <div class="progress-bar-label d-flex justify-content-between">
-                    <span>Completion Rate</span>
-                    <span>{{ quiz.completionRate }}%</span>
-                  </div>
-                  <div class="progress-bar-bg">
-                    <div class="progress-bar-fg" :style="{ width: quiz.completionRate + '%' }"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+
+      <!-- Graphs Section -->
+      <div class="mt-4">
+        <div class="d-flex flex-column flex-md-row align-items-start justify-content-between gap-2 mb-2">
+          <div>
+            <h2 class="section-title mb-0">Graphs</h2>
+            <p class="section-subtitle mb-0">Your recently created quizzes</p>
           </div>
         </div>
-      </section>
+        <section class="dashboard-graphs d-flex flex-column">
+          <div class="graphs-row d-flex flex-row flex-wrap gap-3">
+            <div class="graph-card d-flex align-items-center justify-content-center"></div>
+            <div class="graph-card d-flex align-items-center justify-content-center"></div>
+          </div>
+        </section>
+      </div>
     </main>
   </div>
 </template>
 
+
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 import AdminSidebar from '../../components/AdminSidebar.vue';
 
 const summaryCards = ref([]);
 const recentEvents = ref([]);
 const recentQuizzes = ref([]);
-
 const loading = ref(false);
 const error = ref(null);
 
+const sidebarOpen = ref(false);
+const isMobile = ref(false);
+
+function handleResize() {
+  isMobile.value = window.innerWidth < 992;
+  if (!isMobile.value) sidebarOpen.value = false;
+}
+function toggleSidebar() {
+  sidebarOpen.value = !sidebarOpen.value;
+}
+onMounted(() => {
+  handleResize();
+  window.addEventListener('resize', handleResize);
+  fetchDashboardData();
+});
+
+// Clean up event listener
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+});
+
 // --- API Call ---
-// This function will fetch real data from your backend.
 async function fetchDashboardData() {
   loading.value = true;
   error.value = null;
@@ -118,21 +135,15 @@ async function fetchDashboardData() {
     if (!token) {
       throw new Error('Authentication token not found.');
     }
-
-    // Replace with your actual API endpoint
     const response = await axios.get('http://127.0.0.1:5000/api/admin/dashboard', {
       headers: {
         'Authorization': `Bearer ${token}`
       },
       withCredentials: true
     });
-
-    // Update refs with real data from backend
     summaryCards.value = response.data.summaryCards || [];
     recentEvents.value = response.data.recentEvents || [];
-    recentQuizzes.value = response.data.recentQuizzes || [];
     console.log('Dashboard data:', response.data);
-
   } catch (err) {
     error.value = 'Failed to fetch dashboard data. Please try again later.';
     console.error(err);
@@ -141,104 +152,113 @@ async function fetchDashboardData() {
   }
 }
 
-// Fetch data when the component is first mounted
-onMounted(() => {
-  fetchDashboardData();
-});
-
 </script>
 
 <style scoped>
-/* Main Layout & Theme */
-.admin-dashboard-container {
+/* Graphs Section */
+.dashboard-graphs {
+  background-color: #23232a;
+  border-radius: 1rem;
+  padding: 2rem 2rem 2.5rem 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+.graphs-row {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.graph-card {
+  flex: 1 1 0;
+  min-width: 300px;
+  min-height: 260px;
+  background: #18181f;
+  border-radius: 0.75rem;
+  border: 1px solid #292933;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 991px) {
+  .graphs-row {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .graph-card {
+    min-width: 0;
+    width: 100%;
+  }
+}
+/* Responsive Dashboard Layout */
+.admin-dashboard-responsive {
   font-family: 'Inter', sans-serif;
   background-color: #16161A;
   color: #FFFFFF;
   min-height: 100vh;
+  position: relative;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 260px;
-  background-color: #1E1E24;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
+/* Sidebar sticky/fixed for desktop, scrollable for short screens */
+.sidebar-fixed {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  align-self: flex-start;
+  z-index: 100;
+  overflow-y: auto;
+  max-height: 100vh;
+  /* Prevent sidebar from scrolling with content */
 }
 
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 2.5rem;
+@media (max-width: 991.98px) {
+  .sidebar-fixed {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+    z-index: auto;
+  }
+}
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
+  z-index: 999;
+}
+@media (max-width: 991px) {
+  .main-content {
+    padding: 1rem 0.5rem;
+  }
 }
 
-.logo-icon {
-  color: #6E56F1;
-  width: 32px;
-  height: 32px;
-}
-
-.logo-text {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-left: 0.75rem;
-}
-
-.nav-menu .nav-item {
-  display: flex;
-  align-items: center;
-  padding: 0.9rem 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
-  color: #94A3B8;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.nav-menu .nav-item:hover {
-  background-color: #24242C;
-  color: #FFFFFF;
-}
-
-.nav-menu .nav-item.active {
-  background-color: #6E56F1;
-  color: #FFFFFF;
-  font-weight: 500;
-}
-
-.nav-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 1rem;
-}
-
-/* Main Content */
 .main-content {
   padding: 2rem 3rem;
   overflow-y: auto;
 }
-
 .main-header {
   margin-bottom: 2rem;
 }
-
 .welcome-title {
   font-size: 1.75rem;
   font-weight: 600;
   margin: 0;
 }
-
 .welcome-subtitle {
   color: #94A3B8;
   font-size: 1rem;
   margin-top: 0.25rem;
 }
-
 .search-wrapper {
   position: relative;
 }
-
 .search-icon {
   position: absolute;
   left: 15px;
@@ -246,7 +266,6 @@ onMounted(() => {
   transform: translateY(-50%);
   color: #94A3B8;
 }
-
 .search-input {
   background-color: #24242C;
   border: 1px solid #3A3A43;
@@ -264,7 +283,6 @@ onMounted(() => {
   border-color: #6E56F1;
   box-shadow: 0 0 0 2px rgba(110, 86, 241, 0.2);
 }
-
 .create-quiz-btn {
   background-color: #6E56F1;
   border: none;
@@ -275,12 +293,9 @@ onMounted(() => {
   align-items: center;
   gap: 0.5rem;
 }
-
 .create-quiz-btn:hover {
   background-color: #5a43d1;
 }
-
-/* Section Titles */
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
@@ -290,13 +305,29 @@ onMounted(() => {
   font-size: 0.9rem;
   margin-bottom: 1.5rem;
 }
-
-/* Summary Cards */
+/* Summary Card Sizing for Desktop */
 .summary-card {
   background-color: #24242C;
   border: 1px solid #3A3A43;
   border-radius: 0.75rem;
   padding: 1.5rem;
+  min-width: 220px;
+  max-width: 240px;
+  flex: 1 1 0;
+  box-sizing: border-box;
+}
+@media (max-width: 991px) {
+  .summary-cards {
+    gap: 1rem !important;
+    padding-bottom: 1rem;
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+  }
+  .summary-card {
+    min-width: 170px;
+    max-width: 200px;
+    flex: 0 0 auto;
+  }
 }
 .card-title-text {
   color: #94A3B8;
@@ -322,8 +353,6 @@ onMounted(() => {
 .summary-cards .col-md-3:nth-child(2) .card-icon-wrapper svg { color: #34C38F; }
 .summary-cards .col-md-3:nth-child(3) .card-icon-wrapper svg { color: #50A5F1; }
 .summary-cards .col-md-3:nth-child(4) .card-icon-wrapper svg { color: #F1B44C; }
-
-/* Recent Events */
 .events-list {
   background-color: #24242C;
   border: 1px solid #3A3A43;
@@ -380,8 +409,6 @@ onMounted(() => {
   border: none;
   color: #FFFFFF;
 }
-
-/* Recent Quizzes */
 .quiz-card {
   background-color: #24242C;
   border: 1px solid #3A3A43;

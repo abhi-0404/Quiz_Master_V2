@@ -48,6 +48,7 @@ class Score(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     total_scored = db.Column(db.Integer, nullable=False)
     attempt_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    time_spent = db.Column(db.Integer, default=0)  # Time spent in seconds
     # LINE 50 (CORRECTION): The foreign key must point to 'users.id'.
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     # LINE 52 (CORRECTION): The foreign key must point to 'quizzes.id'.
