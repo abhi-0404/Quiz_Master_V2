@@ -47,3 +47,8 @@ def login():
         'role': user.role,
         'message': 'Login successfully!'
     }), 200
+
+@auth_bp.route('/hello', methods=['GET'])
+def hello():
+    """Simple hello endpoint for testing purposes."""
+    return jsonify({'message': 'Hello from Quiz Master V2!'}), 200
